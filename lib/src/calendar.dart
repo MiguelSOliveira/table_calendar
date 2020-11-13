@@ -10,6 +10,8 @@ typedef void OnDaySelected(DateTime day, List events, List holidays);
 typedef void OnVisibleDaysChanged(
     DateTime first, DateTime last, CalendarFormat format);
 
+typedef void OnMonthChanged(int month, int year);
+
 /// Callback exposing initially visible days (first and last of them), as well as initial `CalendarFormat`.
 typedef void OnCalendarCreated(
     DateTime first, DateTime last, CalendarFormat format);
@@ -95,6 +97,8 @@ class TableCalendar extends StatefulWidget {
 
   /// Called whenever the range of visible days changes.
   final OnVisibleDaysChanged onVisibleDaysChanged;
+
+  final OnMonthChanged onMonthChanged;
 
   /// Called once when the CalendarController gets initialized.
   final OnCalendarCreated onCalendarCreated;
@@ -184,6 +188,7 @@ class TableCalendar extends StatefulWidget {
     this.onHeaderTapped,
     this.onHeaderLongPressed,
     this.onVisibleDaysChanged,
+    this.onMonthChanged,
     this.onCalendarCreated,
     this.initialSelectedDay,
     this.startDay,
@@ -240,6 +245,7 @@ class _TableCalendarState extends State<TableCalendar>
       startingDayOfWeek: widget.startingDayOfWeek,
       selectedDayCallback: _selectedDayCallback,
       onVisibleDaysChanged: widget.onVisibleDaysChanged,
+      onMonthChanged: widget.onMonthChanged,
       onCalendarCreated: widget.onCalendarCreated,
       includeInvisibleDays: widget.calendarStyle.outsideDaysVisible,
     );

@@ -8,6 +8,8 @@ const double _dxMin = -1.2;
 
 typedef void _SelectedDayCallback(DateTime day);
 
+typedef void _OnMonthChanged(int month, int year);
+
 /// Controller required for `TableCalendar`.
 ///
 /// Should be created in `initState()`, and then disposed in `dispose()`:
@@ -93,6 +95,7 @@ class CalendarController {
   bool _useNextCalendarFormat;
   bool _includeInvisibleDays;
   _SelectedDayCallback _selectedDayCallback;
+  _OnMonthChanged _onMonthChanged;
 
   void _init({
     @required Map<DateTime, List> events,
@@ -104,6 +107,7 @@ class CalendarController {
     @required StartingDayOfWeek startingDayOfWeek,
     @required _SelectedDayCallback selectedDayCallback,
     @required OnVisibleDaysChanged onVisibleDaysChanged,
+    @required OnMonthChanged onMonthChanged,
     @required OnCalendarCreated onCalendarCreated,
     @required bool includeInvisibleDays,
   }) {
@@ -114,6 +118,7 @@ class CalendarController {
     _useNextCalendarFormat = useNextCalendarFormat;
     _selectedDayCallback = selectedDayCallback;
     _includeInvisibleDays = includeInvisibleDays;
+    _onMonthChanged = onMonthChanged;
 
     _pageId = 0;
     _dx = 0;
@@ -197,11 +202,11 @@ class CalendarController {
   /// Sets selected day to a given `value`.
   /// Use `runCallback: true` if this should trigger `OnDaySelected` callback.
   void setSelectedDay(
-    DateTime value, {
-    bool isProgrammatic = true,
-    bool animate = true,
-    bool runCallback = false,
-  }) {
+      DateTime value, {
+        bool isProgrammatic = true,
+        bool animate = true,
+        bool runCallback = false,
+      }) {
     final normalizedDate = _normalizeDate(value);
 
     if (animate) {
@@ -415,16 +420,20 @@ class CalendarController {
 
   DateTime _previousMonth(DateTime month) {
     if (month.month == 1) {
+      _onMonthChanged(12, month.year - 1);
       return DateTime(month.year - 1, 12);
     } else {
+      _onMonthChanged(month.month - 1, month.year);
       return DateTime(month.year, month.month - 1);
     }
   }
 
   DateTime _nextMonth(DateTime month) {
     if (month.month == 12) {
+      _onMonthChanged(1, month.year + 1);
       return DateTime(month.year + 1, 1);
     } else {
+      _onMonthChanged(month.month + 1, month.year);
       return DateTime(month.year, month.month + 1);
     }
   }
